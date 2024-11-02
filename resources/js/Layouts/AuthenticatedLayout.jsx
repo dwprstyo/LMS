@@ -11,7 +11,7 @@ import ApplicationLogo from '../Components/ApplicationLogo.png';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-    const userRole = 'Guru';
+    const userRole = user.role_name;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
