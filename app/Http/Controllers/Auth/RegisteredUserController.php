@@ -43,14 +43,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'role_id' => $request->role_id
         ]);
-
         event(new Registered($user));
 
         Auth::login($user);
-
-           // Redirect based on user role, if applicable
-           $redirectPath = $user->role_id == 1 ? "success" : route('dashboard');
-
-           return redirect($redirectPath);
+        return redirect(route('dashboard'));
     }
 }
