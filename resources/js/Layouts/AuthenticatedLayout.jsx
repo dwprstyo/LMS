@@ -1,12 +1,17 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import Guru from '@/Pages/Menu/Guru';
+import Siswa from '@/Pages/Menu/Siswa';
+import SuperAdmin from '@/Pages/Menu/SuperAdmin';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { MdOutlineAccountCircle } from 'react-icons/md';
+import ApplicationLogo from '../Components/ApplicationLogo.png';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
+    const userRole = 'Guru';
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -14,12 +19,16 @@ export default function AuthenticatedLayout({ header, children }) {
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-2 px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
-                            <div className="flex shrink-0 items-center">
+                            <div className="flex shrink-0 items-center border-r border-gray-100 pr-10">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <img
+                                        src={ApplicationLogo}
+                                        alt="logo"
+                                        className="w-32"
+                                    />
                                 </Link>
                             </div>
 
@@ -42,7 +51,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 type="button"
                                                 className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
-                                                {user.name}
+                                                <div className="flex flex-col items-end">
+                                                    {user.name}
+                                                    <span>{userRole}</span>
+                                                </div>
+                                                <MdOutlineAccountCircle className="ml-2 h-8 w-8" />
 
                                                 <svg
                                                     className="-me-0.5 ms-2 h-4 w-4"
@@ -170,7 +183,18 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
             )}
 
-            <main>{children}</main>
+            <main className="grid grid-cols-12">
+                <div className="col-span-2 border-r border-gray-100">
+                    {userRole === 'Super Admin' ? (
+                        <SuperAdmin />
+                    ) : userRole === 'Guru' ? (
+                        <Guru />
+                    ) : (
+                        <Siswa />
+                    )}
+                </div>
+                <div className="col-span-10">{children}</div>
+            </main>
         </div>
     );
 }
