@@ -34,18 +34,23 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role_id' => 'nullable|exists:roles,id', // Validate role_id if provided
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => $request->role_id
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+           // Redirect based on user role, if applicable
+           $redirectPath = $user->role_id == 1 ? "success" : route('dashboard');
+
+           return redirect($redirectPath);
     }
 }
