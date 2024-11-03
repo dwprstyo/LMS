@@ -20,6 +20,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/dashboard-superadmin', function () {
+    return Inertia::render('SuperAdmin/DashboardSuperAdmin'); // Pastikan Anda memiliki komponen Inertia 'NewPage' di frontend
+})->middleware(['auth', 'verified'])->name('dashboard.superadmin');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
