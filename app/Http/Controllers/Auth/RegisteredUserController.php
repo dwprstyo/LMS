@@ -12,22 +12,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Controllers\RoleController;
+use App\Models\Role;
 
 class RegisteredUserController extends Controller
 {
-    protected $roleController;
-
-    public function __construct(RoleController $roleController)
-    {
-        $this->roleController = $roleController;
-    }
     /**
      * Display the registration view.
      */
     public function create(): Response
     {
-        $roles = $this->roleController->index();
+        $roles = Role::all(); 
         return Inertia::render('Auth/Register', [$roles]);
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role; // Import the Role model
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class RoleController extends Controller
 {
@@ -13,17 +13,17 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::all(); // Fetch all roles
-        return response()->json($roles); // Return roles as JSON
+        $roles = Role::all();
+
+        return Inertia::render('Roles/Index', [
+            'roles' => $roles,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new role.
-     */
     public function create()
     {
-        // Typically not used in API; can return a view if using Blade templates
-        return response()->json(['message' => 'Show form for creating a new role']);
+        // Render the React component for creating a role
+        return Inertia::render('Roles/Create');
     }
 
     /**
@@ -35,9 +35,10 @@ class RoleController extends Controller
             'role_name' => 'required|string|unique:roles|max:255',
         ]);
 
-        $role = Role::create($validatedData); // Create a new role
+        $role = Role::create($validatedData);
 
-        return response()->json($role, 201); // Return the created role
+        // Redirect to the roles index with a success message
+        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
     }
 
     /**
@@ -48,10 +49,13 @@ class RoleController extends Controller
         $role = Role::find($id);
 
         if (!$role) {
-            return response()->json(['message' => 'Role not found'], 404);
+            return redirect()->route('roles.index')->withErrors(['message' => 'Role not found.']);
         }
 
-        return response()->json($role); // Return the role
+        // Render the React component to display a role
+        return Inertia::render('Roles/Show', [
+            'role' => $role,
+        ]);
     }
 
     /**
@@ -59,8 +63,16 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        // Typically not used in API; can return a view if using Blade templates
-        return response()->json(['message' => 'Show form for editing role with ID ' . $id]);
+        $role = Role::find($id);
+
+        if (!$role) {
+            return redirect()->route('roles.index')->withErrors(['message' => 'Role not found.']);
+        }
+
+        // Render the React component for editing a role
+        return Inertia::render('Roles/Edit', [
+            'role' => $role,
+        ]);
     }
 
     /**
@@ -71,16 +83,17 @@ class RoleController extends Controller
         $role = Role::find($id);
 
         if (!$role) {
-            return response()->json(['message' => 'Role not found'], 404);
+            return redirect()->route('roles.index')->withErrors(['message' => 'Role not found.']);
         }
 
         $validatedData = $request->validate([
             'role_name' => 'required|string|unique:roles,role_name,' . $id . '|max:255',
         ]);
 
-        $role->update($validatedData); // Update the role
+        $role->update($validatedData);
 
-        return response()->json($role); // Return the updated role
+        // Redirect back with a success message
+        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
     }
 
     /**
@@ -91,11 +104,12 @@ class RoleController extends Controller
         $role = Role::find($id);
 
         if (!$role) {
-            return response()->json(['message' => 'Role not found'], 404);
+            return redirect()->route('roles.index')->withErrors(['message' => 'Role not found.']);
         }
 
-        $role->delete(); // Delete the role
+        $role->delete();
 
-        return response()->json(['message' => 'Role deleted successfully'], 200); // Return success message
+        // Redirect back with a success message
+        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
 }
