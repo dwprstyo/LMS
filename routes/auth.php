@@ -62,18 +62,5 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
     ->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
-    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
- // List all roles
-    Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create'); // Show form to create a new role (optional for API)
-    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store'); // Store a new role
-    Route::get('/roles/{id}', [RoleController::class, 'show'])->name('roles.show'); // Show a specific role
-    Route::get('/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit'); // Show form to edit a role (optional for API)
-    Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update'); // Update a specific role
-    Route::delete('/roles/{id}', [RoleController::class, 'destroy'])->name('roles.destroy'); // Delete a specific role
 });
 
-Route::middleware([StudentMiddleware::class])->group(function () {
-});
-
-Route::middleware([TeacherMiddleware::class])->group(function () {
-});
